@@ -4,8 +4,8 @@ import './App.css'
 
 
 const turns = {
-  X: 'x',
-  O: 'o'
+  X: '*',
+  O: '°'
 }
 
 
@@ -41,6 +41,18 @@ const WINNER_COMBOS = [
 function App() {
 
 
+  const [board, setBoard] = useState(Array(9).fill(null))
+
+  const [winner, setWinner] = useState()
+
+  const [turn, setTurn] = useState(turns.X)
+
+  const resetGame = ()=>{
+    setBoard(Array(9).fill(null))
+    setTurn(turns.X)
+    setWinner(null)
+  }
+
   const updateBoard = (index)=>{
     if (board[index] || winner) return
 
@@ -48,22 +60,17 @@ function App() {
     newBoard[index] = turn
     setBoard(newBoard)
 
-    const newWinner = checkWinner(newBoard)
+  const newWinner = checkWinner(newBoard)
     if (newWinner){
       setWinner(newWinner)
-      console.log(newWinner)
+      console.log('El ganador es', newWinner)
     }
 
 
-    const newTurn = turn === turns.O ? turns.X : turns.O
+  const newTurn = turn === turns.O ? turns.X : turns.O
     setTurn(newTurn)
   }
 
-  const [board, setBoard] = useState(Array(9).fill(null))
-
-  const [winner, setWinner] = useState()
-
-  const [turn, setTurn] = useState(turns.X)
 
   const checkWinner = (boardToCheck)=>{
     for (const combo of WINNER_COMBOS){
@@ -84,6 +91,7 @@ function App() {
   return (
     <main className='board'>
       <h1>Ta-Te-Ti</h1>
+      <button onClick={resetGame}>Reset del juego</button>
       <section className='game'>
         {
           board.map((_, index)=>{
@@ -108,6 +116,29 @@ function App() {
           {turns.O}
         </Square>
       </section>
+
+
+      {
+        winner !== null && (
+          <section className='winner'>
+            <div className='text'>
+              <h2>
+                {
+                  winner === false
+                  ? 'empate'
+                  : 'Ganó: '
+                }
+              </h2>
+              <header className='win'>
+                {winner && <Square>{winner}</Square>}
+              </header>
+              <footer>
+                <button onClick={resetGame}>Empezar de nuevo</button>
+              </footer>
+            </div>
+          </section>
+        )
+      }
     </main>
 
   )
