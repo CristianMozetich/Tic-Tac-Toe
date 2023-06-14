@@ -53,6 +53,10 @@ function App() {
     setWinner(null)
   }
 
+  const checkEndGame = (newBoard)=>{
+    return newBoard.every((Square)=> Square !== null )
+  }
+
   const updateBoard = (index)=>{
     if (board[index] || winner) return
 
@@ -60,16 +64,20 @@ function App() {
     newBoard[index] = turn
     setBoard(newBoard)
 
-  const newWinner = checkWinner(newBoard)
-    if (newWinner){
+    const newWinner = checkWinner(newBoard)
+      if (newWinner){
       setWinner(newWinner)
       console.log('El ganador es', newWinner)
+    } else if (checkEndGame(newBoard)) {
+      setWinner(false)
     }
 
 
-  const newTurn = turn === turns.O ? turns.X : turns.O
+    const newTurn = turn === turns.O ? turns.X : turns.O
     setTurn(newTurn)
   }
+
+
 
 
   const checkWinner = (boardToCheck)=>{
@@ -94,14 +102,14 @@ function App() {
       <button onClick={resetGame}>Reset del juego</button>
       <section className='game'>
         {
-          board.map((_, index)=>{
+          board.map((square, index)=>{
             return (
               <Square
               key={index}
               index={index}
               updateBoard={updateBoard}
               >
-              {board[index]}
+              {square}
              </Square> 
 
             )
@@ -125,7 +133,7 @@ function App() {
               <h2>
                 {
                   winner === false
-                  ? 'empate'
+                  ? 'Empate'
                   : 'Ganó: '
                 }
               </h2>
